@@ -1,10 +1,11 @@
 /**
  * Created by aayushchadha on 26/11/17.
  */
-var twilio = require('twilio');
+const twilio = require('twilio');
 
-var admin = require("firebase-admin");
+const admin = require("firebase-admin");
 var serviceAccount = require("./hckkings.json");
+const trans = require('google-translate-api');
 
 admin.initializeApp({
     credential: admin.credential.cert(serviceAccount),
@@ -50,7 +51,7 @@ driverRequestRef.orderByKey().limitToLast(1).on('child_added', function (driverR
             snapShot.forEach(function (childSnapshot) {
                 let drivers = childSnapshot.val();
                 console.log(drivers.phone_number);
-                let driversMessage = "A rider requests a ride from " + riderData.origin + " to " + riderData.destination +
+                let driversMessage = "A passenger requests a ride from " + riderData.origin + " to " + riderData.destination +
                     ". Number of travellers are " + riderData.number_of_travellers  + ". The traveller/s can be reached on " +
                     riderData.Requested_by + ". Please call them on this number to confirm other details."
                 sendMessage(driversMessage, drivers.phone_number);
@@ -59,21 +60,29 @@ driverRequestRef.orderByKey().limitToLast(1).on('child_added', function (driverR
 });
 
 const sendMessage = (text,recipient) => {
+    let result;
+    trans(text, {to: 'hi'}).then(res => {
+        console.log(res.text);
+        //=> I speak English
+        console.log(res.from.language.iso);
+        result = text + " " + res.text;
+        let accountSid = 'ACf710fb920ebfe1e478f4e2a2531067d2';
+        let authToken = '9f3175e2b5b8786c1e245bd1750fd513';
 
-    let accountSid = 'ACf710fb920ebfe1e478f4e2a2531067d2';
-    let authToken = '9f3175e2b5b8786c1e245bd1750fd513';
+        //require the Twilio module and create a REST client
+        let client = require('twilio')(accountSid, authToken);
 
-    //require the Twilio module and create a REST client
-    let client = require('twilio')(accountSid, authToken);
-
-    client.messages.create({
-        to: recipient,
-        from: "+441554260044",
-        body: text,
-    }, function(err, message) {
-        if(err) {
-            console.log(err.message);
-        }
+        client.messages.create({
+            to: recipient,
+            from: "+441554260044",
+            body: result,
+        }, function(err, message) {
+            if(err) {
+                console.log(err.message);
+            }
+        });
+        //=> nl
+    }).catch(err => {
+        console.error(err);
     });
-
 }
