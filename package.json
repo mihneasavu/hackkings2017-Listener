@@ -1,0 +1,24 @@
+{
+  "name": "hackkings2017-listener",
+  "version": "1.0.0",
+  "description": "",
+  "main": "listener.js",
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/mihneasavu/hackkings2017-Listener.git"
+  },
+  "author": "",
+  "license": "ISC",
+  "bugs": {
+    "url": "https://github.com/mihneasavu/hackkings2017-Listener/issues"
+  },
+  "homepage": "https://github.com/mihneasavu/hackkings2017-Listener#readme",
+  "dependencies": {
+    "firebase": "^4.6.2",
+    "firebase-admin": "^5.5.1",
+    "twilio": "^3.10.0"
+  }
+}
